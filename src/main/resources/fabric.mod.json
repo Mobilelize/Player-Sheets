@@ -3,7 +3,7 @@
 	"id": "player-sheets",
 	"version": "${version}",
 	"name": "Player Sheets",
-	"description": "Player Sheets Keeps Track of a list of players and also allows you to send macro commands based on if you add a player to the list or removed a player.",
+	"description": "Player Sheets Keeps Track of a list of players and also allows you to send macro commands based on if you add a player to the list or remove a player.",
 	"authors": [
 		"Mobilelize"
 	],

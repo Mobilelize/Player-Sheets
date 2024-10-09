@@ -54,7 +54,7 @@ public class PlayerSheetCommands {
             // Register the main /ps command
             Suggestions Suggestion = null;
             dispatcher.register(
-                    literal("ps")
+                    literal("ps").executes(context -> showHelp())
                             .then(literal("help").executes(context -> showHelp()))
                             .then(literal("clear")
                                     .executes(context -> {
