@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "player-sheets",
+	"version": "${version}",
+	"name": "Player Sheets",
+	"description": "Player Sheets Keeps Track of a list of players and also allows you to send macro commands based on if you add a player to the list or removed a player.",
+	"authors": [
+		"Mobilelize"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/player-sheets/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.mobilelize.PlayerSheets"
+		],
+		"client": [
+			"net.mobilelize.PlayerSheetsClient"
+		]
+	},
+	"mixins": [
+		"player-sheets.mixins.json",
+		{
+			"config": "player-sheets.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.0",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
