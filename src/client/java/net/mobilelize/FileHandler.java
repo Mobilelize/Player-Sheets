@@ -9,12 +9,60 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 public class FileHandler {
 
-    private static final String DIRECTORY_NAME = "Player Sheets Mobilelize";  // Directory in the config folder
+    private static final String DIRECTORY_NAME = "player-sheets";  // Directory in the config folder
     private static final String PLAYER_FILE_NAME = "player-sheet.txt";        // The file that will store player names
     private static final String MACRO_FILE_NAME = "player-macros.json";       // The file that will store macros
+    private static final String CONFIG_FILE = "settings.txt";
+
+    // Get the path to the text config file
+    private static Path getConfigFilePath() {
+        Path configDir = FabricLoader.getInstance().getConfigDir().resolve(DIRECTORY_NAME);
+        Path configFile = configDir.resolve(CONFIG_FILE);
+
+        try {
+            if (!Files.exists(configDir)) {
+                Files.createDirectories(configDir); // Create directory if it doesn't exist
+            }
+            if (!Files.exists(configFile)) {
+                Files.createFile(configFile); // Create file if it doesn't exist
+                Files.write(configFile, List.of("useTabList : true")); // Default to 'true'
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return configFile;
+    }
+
+    // Method to load the value of useTabList from the config file
+    public static boolean loadUseTabList() {
+        Path configFile = getConfigFilePath();
+        try {
+            List<String> lines = Files.readAllLines(configFile);
+            for (String line : lines) {
+                if (line.startsWith("useTabList :")) {
+                    return Boolean.parseBoolean(line.split(":")[1].trim());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true; // Default to 'true' if not found or error
+    }
+
+    // Method to save the value of useTabList to the config file
+    public static void saveUseTabList(boolean useTabList) {
+        Path configFile = getConfigFilePath();
+        try {
+            Files.write(configFile, List.of("useTabList : " + useTabList));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 

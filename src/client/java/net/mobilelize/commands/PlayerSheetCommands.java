@@ -13,6 +13,7 @@ import net.minecraft.client.MinecraftClient;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.mobilelize.commands.PlayerSheetFunctions.clearMacros;
+import static net.mobilelize.commands.PlayerSheetFunctions.togglePlayerSource;
 import static net.mobilelize.suggestions.Suggestions.*;
 
 public class PlayerSheetCommands {
@@ -55,6 +56,7 @@ public class PlayerSheetCommands {
             Suggestions Suggestion = null;
             dispatcher.register(
                     literal("ps").executes(context -> showHelp())
+                            .then(literal("toggle").executes(context -> togglePlayerSource()))
                             .then(literal("help").executes(context -> showHelp()))
                             .then(literal("clear")
                                     .executes(context -> {
@@ -199,6 +201,7 @@ public class PlayerSheetCommands {
         client.player.sendMessage(Text.literal("§6/ps add [playerName] §b- Add a player"), false);
         client.player.sendMessage(Text.literal("§6/ps remove [playerName] §b- Remove a player"), false);
         client.player.sendMessage(Text.literal("§6/ps list §b- List all tracked players"), false);
+        client.player.sendMessage(Text.literal("§6/ps toggle §b- Toggle the suggestions for getting Online players between Tab List and Rendered Players"), false);
         client.player.sendMessage(Text.literal("§6/ps a [playerName] §b- Short command to add a player"), false);
         client.player.sendMessage(Text.literal("§6/ps r [playerName] §b- Short command to remove a player"), false);
         client.player.sendMessage(Text.literal("§6/ps l §b- Short command to list all players"), false);
@@ -216,8 +219,8 @@ public class PlayerSheetCommands {
         client.player.sendMessage(Text.literal("§a- 'add': Executes commands when a player is added."), false);
         client.player.sendMessage(Text.literal("§a- 'remove': Executes commands when a player is removed."), false);
         client.player.sendMessage(Text.literal("§6For example:"), false);
-        client.player.sendMessage(Text.literal("§b/ps macro add §6add §asay Welcome ${name} §b- Sends a welcome message when a player is added."), false);
-        client.player.sendMessage(Text.literal("§b/ps macro add §6remove §asay Goodbye ${name} §b- Sends a goodbye message when a player is removed."), false);
+        client.player.sendMessage(Text.literal("§b/ps macro add §6add §agamemode creative ${name} §b- Give creative mode to the player added to the list."), false);
+        client.player.sendMessage(Text.literal("§b/ps macro add §6remove §a${chat} Goodbye ${name} §b- Sends a goodbye message in chat to the player removed from the list."), false);
         client.player.sendMessage(Text.literal("§6-=-=-=-=-"), false);
         return 1;
     }

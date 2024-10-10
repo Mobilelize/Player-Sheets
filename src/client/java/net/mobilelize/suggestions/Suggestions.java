@@ -1,6 +1,9 @@
 package net.mobilelize.suggestions;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.text.Text;
+import net.mobilelize.FileHandler;
+import net.mobilelize.commands.PlayerSheetFunctions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +16,7 @@ import static net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil.GSON;
 
 public class Suggestions {
 
-    private static final String CONFIG_DIRECTORY = "config/Player Sheets mobilelize";
+    private static final String CONFIG_DIRECTORY = "config/player-sheets";
     private static final String CONFIG_FILE = "player-sheet.txt";
     private static final String MACRO_FILE_NAME = "player-macros.json";
 
@@ -22,7 +25,7 @@ public class Suggestions {
      *
      * @return An array of online player names.
      */
-    public static String[] getAllOnlinePlayers1() {
+    public static String[] getAllRenderedPlayers() {
         List<String> onlinePlayers = new ArrayList<>();
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -35,6 +38,10 @@ public class Suggestions {
     }
 
     public static String[] getAllOnlinePlayers() {
+        if (!PlayerSheetFunctions.useTabList)
+        {
+            return getAllRenderedPlayers();
+        }
         List<String> onlinePlayers = new ArrayList<>();
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -44,10 +51,6 @@ public class Suggestions {
             client.getNetworkHandler().getPlayerList().forEach(playerListEntry -> {
                 onlinePlayers.add(playerListEntry.getProfile().getName());
             });
-        }
-        if (onlinePlayers.isEmpty())
-        {
-            return getAllOnlinePlayers1();
         }
         return onlinePlayers.toArray(new String[0]); // Convert List to String[]
     }

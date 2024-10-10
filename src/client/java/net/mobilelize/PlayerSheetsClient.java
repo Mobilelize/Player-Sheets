@@ -2,6 +2,7 @@ package net.mobilelize;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.mobilelize.commands.PlayerSheetCommands;
+import net.mobilelize.commands.PlayerSheetFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class PlayerSheetsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		PlayerSheetCommands.registerClientCommands();
-
+		PlayerSheetFunctions.playerTracker();
 		LOGGER.info("Player Sheets Initialized");
 	}
 }

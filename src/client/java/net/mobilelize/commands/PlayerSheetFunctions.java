@@ -13,10 +13,26 @@ import java.util.*;
 
 public class PlayerSheetFunctions {
 
-    private static final String CONFIG_DIRECTORY = "config/Player Sheets mobilelize";
+    private static final String CONFIG_DIRECTORY = "config/player-sheets";
     private static final String CONFIG_FILE = "player-sheet.txt";
     private static final String MACRO_FILE = "player-macros.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public  static boolean useTabList = true;
+
+    public static void playerTracker() {
+        useTabList = FileHandler.loadUseTabList();  // Load the value from the text file
+    }
+
+    // Toggle and save the state
+    public static int togglePlayerSource() {
+        useTabList = !useTabList;
+        String source = useTabList ?   "§6Tab List" : "§cRendered Players";
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§bPlayer source set to: " + source), false);
+
+        // Save the updated state to the config file
+        FileHandler.saveUseTabList(useTabList);
+        return 1;
+    }
 
     static MacroState loadMacroState() {
         Path path = Path.of(CONFIG_DIRECTORY, MACRO_FILE);
@@ -136,7 +152,16 @@ public class PlayerSheetFunctions {
         for (String command : commandsToExecute) {
             String formattedCommand = command.replace("${name}", playerName);
             // Execute the command in-game using the player name
-            MinecraftClient.getInstance().player.networkHandler.sendChatCommand((formattedCommand));
+            // Check if the command starts with "${chat}"
+            if (formattedCommand.startsWith("${chat}")) {
+                // Remove the "${chat}" prefix
+                String chatMessage = formattedCommand.replace("${chat}", "").trim();
+                // Send the message as a chat message
+                MinecraftClient.getInstance().player.networkHandler.sendChatMessage(chatMessage);
+            } else {
+                // Otherwise, send it as a command
+                MinecraftClient.getInstance().player.networkHandler.sendChatCommand(formattedCommand);
+            }
         }
     }
 
