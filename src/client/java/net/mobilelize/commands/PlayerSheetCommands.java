@@ -201,7 +201,7 @@ public class PlayerSheetCommands {
         client.player.sendMessage(Text.literal("§6/ps add [playerName] §b- Add a player"), false);
         client.player.sendMessage(Text.literal("§6/ps remove [playerName] §b- Remove a player"), false);
         client.player.sendMessage(Text.literal("§6/ps list §b- List all tracked players"), false);
-        client.player.sendMessage(Text.literal("§6/ps toggle §b- Toggle the suggestions for getting Online players between Tab List and Rendered Players"), false);
+        client.player.sendMessage(Text.literal("§6/ps toggle §b- Toggle the suggestions and list for getting Online players between Tab List and Rendered Players"), false);
         client.player.sendMessage(Text.literal("§6/ps a [playerName] §b- Short command to add a player"), false);
         client.player.sendMessage(Text.literal("§6/ps r [playerName] §b- Short command to remove a player"), false);
         client.player.sendMessage(Text.literal("§6/ps l §b- Short command to list all players"), false);

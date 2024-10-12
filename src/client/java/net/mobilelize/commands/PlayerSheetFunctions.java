@@ -3,6 +3,7 @@ package net.mobilelize.commands;
 import net.minecraft.text.Text;
 import net.minecraft.client.MinecraftClient;
 import net.mobilelize.FileHandler;
+import net.mobilelize.suggestions.Suggestions;
 import org.spongepowered.include.com.google.gson.Gson;
 import org.spongepowered.include.com.google.gson.GsonBuilder;
 
@@ -236,16 +237,47 @@ public class PlayerSheetFunctions {
     }
 
     public int listPlayers() {
-        Set<String> players = readPlayers();
-        int totalPlayers = players.size(); // Get the total number of players
+        Set<String> players = readPlayers();   // Get the set of tracked players
+        String[] onlinePlayers = Suggestions.getAllOnlinePlayers();   // Get the list of currently online players
+        int totalPlayers = players.size();     // Get the total number of tracked players
 
         if (totalPlayers == 0) {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("§4No players tracked."), false);
         } else {
-            // Send a message with the total number of players and their names
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cTracked players §6(" + totalPlayers + "):§a " + String.join(", ", players)), false);
+            StringBuilder playerListMessage = new StringBuilder();
+            playerListMessage.append("§cTracked players §6(").append(totalPlayers).append("):§a ");
+
+            int index = 0;
+            for (String player : players) {
+                if (isPlayerOnline(player, onlinePlayers)) {
+                    playerListMessage.append("§a").append(player);  // Online players in green
+                } else {
+                    playerListMessage.append("§c").append(player);  // Offline players in red
+                }
+
+                // Append a comma after each player except the last one
+                if (index < totalPlayers - 1) {
+                    playerListMessage.append(", ");
+                }
+                index++;
+            }
+
+            // Send the formatted message to the player
+            MinecraftClient.getInstance().player.sendMessage(Text.literal(playerListMessage.toString()), false);
         }
+
         return 1;
+    }
+
+
+    // Helper method to check if a player is online
+    private boolean isPlayerOnline(String player, String[] onlinePlayers) {
+        for (String onlinePlayer : onlinePlayers) {
+            if (onlinePlayer.equalsIgnoreCase(player)) {  // Case-insensitive comparison
+                return true;
+            }
+        }
+        return false;
     }
 
     // JSON structure to store macro state
