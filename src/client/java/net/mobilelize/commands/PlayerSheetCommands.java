@@ -244,27 +244,23 @@ public class PlayerSheetCommands {
         // Load the current macro states
         PlayerSheetFunctions.MacroState state = functions.loadMacroState();
 
-        // Display current macro states
-        client.player.sendMessage(Text.literal("§8§m------------------------------------------\n" +
+        StringBuilder macroList = new StringBuilder("§8§m------------------------------------------\n" +
                 "§f>>>§6§lCurrent Macros§r§f<<<\n" +
-                "§8§m------------------------------------------\n"), false);
+                "§8§m------------------------------------------\n" + "\n§6Add Macros (Active: " + (state.add.enabled ? "§aEnabled" : "§cDisabled") + "§6):");
 
-        // Add details for the 'add' macros
-        client.player.sendMessage(Text.literal("§6Add Macros (Active: " + (state.add.enabled ? "§aEnabled" : "§cDisabled") + "§6):"), false);
         for (String command : state.add.commands) {
-            client.player.sendMessage(Text.literal("  - " + command), false);
+            macroList.append("\n§f  - ").append(command);
         }
 
-        client.player.sendMessage(Text.literal("\n"), false);
+        macroList.append("\n\n").append("§6Remove Macros (Active: ").append(state.remove.enabled ? "§aEnabled" : "§cDisabled").append("§6):");
 
         // Add details for the 'remove' macros
-        client.player.sendMessage(Text.literal("§6Remove Macros (Active: " + (state.remove.enabled ? "§aEnabled" : "§cDisabled") + "§6):"), false);
         for (String command : state.remove.commands) {
-            client.player.sendMessage(Text.literal("  - " + command), false);
+            macroList.append("\n§f  - ").append(command);
         }
 
         //End of message
-        client.player.sendMessage(Text.literal("\n§8§m------------------------------------------\n"), false);
+        client.player.sendMessage(Text.literal(macroList + "\n\n§8§m------------------------------------------\n"), false);
 
         return 1;
     }
