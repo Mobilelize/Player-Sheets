@@ -27,8 +27,8 @@ public class PlayerSheetFunctions {
     // Toggle and save the state
     public static int togglePlayerSource() {
         useTabList = !useTabList;
-        String source = useTabList ?   "§6Tab List" : "§cRendered Players";
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("§bPlayer source set to: " + source), false);
+        String source = useTabList ?   "§bTab List" : "§cRendered Players";
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§6Player source set to: " + source), false);
 
         // Save the updated state to the config file
         FileHandler.saveUseTabList(useTabList);
@@ -72,12 +72,12 @@ public class PlayerSheetFunctions {
         } else if ("remove".equals(type)) {
             state.remove.commands.add(command);
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Invalid macro type: " + type), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cInvalid macro type: " + type), false);
             return 0;
         }
 
         saveMacroState(state);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("§aAdded macro for §6/ps " + type + ": " + command), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§6Added macro for §a/ps " + type + ":§f " + command), false);
         return 1;
     }
 
@@ -90,12 +90,12 @@ public class PlayerSheetFunctions {
         } else if ("remove".equals(type)) {
             state.remove.commands.remove(command);
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Invalid macro type: " + type), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cInvalid macro type: " + type), false);
             return 0;
         }
 
         saveMacroState(state);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("§cRemoved macro for §b/ps " + type + ": " + command), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§cRemoved macro for §a/ps " + type + ":&f " + command), false);
         return 1;
     }
 
@@ -110,12 +110,12 @@ public class PlayerSheetFunctions {
             state.remove.enabled = !state.remove.enabled;
             enabled = state.remove.enabled;
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Invalid macro type: " + type), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cInvalid macro type: " + type), false);
             return 0;
         }
 
         saveMacroState(state);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal((enabled ? "§aEnabled" : "§cDisabled") + " macros for /ps " + type), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal((enabled ? "§aEnabled" : "§cDisabled") + " §6macros for /ps " + type), false);
         return 1;
     }
 
@@ -128,12 +128,12 @@ public class PlayerSheetFunctions {
         } else if ("remove".equals(type)) {
             state.remove.enabled = enabled;
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Invalid macro type: " + type), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cInvalid macro type: " + type), false);
             return 0;
         }
 
         saveMacroState(state);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal((enabled ? "§aEnabled" : "§cDisabled") + " macros for /ps " + type), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal((enabled ? "§aEnabled" : "§cDisabled") + " §6macros for /ps " + type), false);
         return 1;
     }
 
@@ -171,7 +171,7 @@ public class PlayerSheetFunctions {
         Path playerFilePath = FileHandler.findOrCreatePlayerFile();
         try {
             Files.writeString(playerFilePath, ""); // Overwrite the file with an empty string
-            System.out.println("§cPlayer list cleared.");
+            System.out.println("§cPlayer list cleared");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -187,17 +187,17 @@ public class PlayerSheetFunctions {
         {
             state.add.commands.clear();
             saveMacroState(state);
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all §aadd§c macros."), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all §aadd§c macros"), false);
             return 1;
         } else if (Objects.equals(type, "remove")) {
             state.remove.commands.clear();
             saveMacroState(state);
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all §aremove§c macros."), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all §aremove§c macros"), false);
             return 1;
         }
         else if (!Objects.equals(type, "all"))
         {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNothing has been Cleared."), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNothing has been Cleared"), false);
             return 1;
         }
 
@@ -206,7 +206,7 @@ public class PlayerSheetFunctions {
 
         // Save the updated state back to the JSON file
         saveMacroState(state);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all macros."), false);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§cCleared all macros"), false);
         return 1; // Success
     }
 
@@ -218,7 +218,7 @@ public class PlayerSheetFunctions {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("§aAdded player:§6 " + playerName), false);
             executeMacros("add", playerName);  // Trigger the add macros
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Player already exists:§6 " + playerName), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cPlayer already exists:§6 " + playerName), false);
         }
         return 1;
     }
@@ -231,7 +231,7 @@ public class PlayerSheetFunctions {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("§aRemoved player:§6 " + playerName), false);
             executeMacros("remove", playerName);  // Trigger the remove macros
         } else {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4Player not found:§6 " + playerName), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cPlayer not found:§6 " + playerName), false);
         }
         return 1;
     }
@@ -242,10 +242,10 @@ public class PlayerSheetFunctions {
         int totalPlayers = players.size();     // Get the total number of tracked players
 
         if (totalPlayers == 0) {
-            MinecraftClient.getInstance().player.sendMessage(Text.literal("§4No players tracked."), false);
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo players tracked"), false);
         } else {
             StringBuilder playerListMessage = new StringBuilder();
-            playerListMessage.append("§cTracked players §6(").append(totalPlayers).append("):§a ");
+            playerListMessage.append("§6Tracked players (").append(totalPlayers).append("):§a ");
 
             int index = 0;
             for (String player : players) {

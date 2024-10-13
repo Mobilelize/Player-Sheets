@@ -108,6 +108,7 @@ public class PlayerSheetCommands {
                                     .executes(context -> functions.listPlayers())
                             )
                             .then(literal("macro")
+                                    .executes(context -> showMacroList())
                                     .then(literal("add")
                                             .then(argument("type", StringArgumentType.word()) // Argument for "add" or "remove"
                                                     .suggests(macroTypeSuggestions)  // Suggest "add" and "remove"
@@ -197,31 +198,43 @@ public class PlayerSheetCommands {
     private static int showHelp() {
         MinecraftClient client = MinecraftClient.getInstance();
 
-        client.player.sendMessage(Text.literal("§6/ps help §b- Show this message"), false);
-        client.player.sendMessage(Text.literal("§6/ps add [playerName] §b- Add a player"), false);
-        client.player.sendMessage(Text.literal("§6/ps remove [playerName] §b- Remove a player"), false);
-        client.player.sendMessage(Text.literal("§6/ps list §b- List all tracked players"), false);
-        client.player.sendMessage(Text.literal("§6/ps toggle §b- Toggle the suggestions and list for getting Online players between Tab List and Rendered Players"), false);
-        client.player.sendMessage(Text.literal("§6/ps a [playerName] §b- Short command to add a player"), false);
-        client.player.sendMessage(Text.literal("§6/ps r [playerName] §b- Short command to remove a player"), false);
-        client.player.sendMessage(Text.literal("§6/ps l §b- Short command to list all players"), false);
-        client.player.sendMessage(Text.literal("§6-=-=-=-=-"), false);
+        client.player.sendMessage(Text.literal(
+                "§8§m------------------------------------------\n" +
+                "§f>>>§6§lPlayer Sheets Help Menu§r§f<<<\n" +
+                "§8§m------------------------------------------\n" +
+                "\n" +
+                "§7§lCommands:\n" +
+                "§6/ps help §7- §fShow this help menu.\n" +
+                "§6/ps add [playerName] §7- §fAdd a player.\n" +
+                "§6/ps remove [playerName] §7- §fRemove a player.\n" +
+                "§6/ps list §7- §fList all tracked players.\n" +
+                "§6/ps toggle §7- §fToggle between Tab List and Rendered Players.\n" +
+                "§6/ps a [playerName] §7- §fShort command to add a player.\n" +
+                "§6/ps r [playerName] §7- §fShort command to remove a player.\n" +
+                "§6/ps l §7- §fShort command to list all players.\n" +
+                "\n" +
+                "§8§m------------------------------------------\n" +
+                "§f>>>§6§lMacros Management§r§f<<<\n" +
+                "§8§m------------------------------------------\n" +
+                "\n" +
+                "§6/ps macro add [add/remove] [command] §7- §fAdd a macro to /ps add or /ps remove.\n" +
+                "§6/ps macro remove [add/remove] [command] §7- §fRemove a macro from /ps add or /ps remove.\n" +
+                "§6/ps macro toggle [add/remove] [true/false] §7- §fEnable or disable macros for /ps add or /ps remove.\n" +
+                "§6/ps macro list §7- §fList all macros.\n" +
+                "§6/ps macro clear [add/remove/all] §7- §fClear macros for /ps add, /ps remove, or all.\n" +
+                "\n" +
+                "§8§m------------------------------------------\n" +
+                "§cMacros allow you to automate commands you frequently use.\n" +
+                "§cYou can create two types of macros:\n" +
+                "§7- §a'add': Executes commands when a player is added.\n" +
+                "§7- §a'remove': Executes commands when a player is removed.\n" +
+                "\n" +
+                "§7For example:\n" +
+                "§6/ps macro add §aadd §6gamemode creative ${name} §7- §fGive creative mode to the player added to the list.\n" +
+                "§6/ps macro add §aremove §6${chat} Goodbye ${name} §7- §fSends a goodbye message in chat with the removed player name from the list.\n" +
+                "\n" +
+                "§8§m------------------------------------------\n"), false);
 
-        // Add macro management to the help menu
-        client.player.sendMessage(Text.literal("§b§l-=§6Macros Management§b=-"), false);
-        client.player.sendMessage(Text.literal("§6/ps macro add [add/remove] [command] §b- Add a macro to /ps add or /ps remove"), false);
-        client.player.sendMessage(Text.literal("§6/ps macro remove [add/remove] [command] §b- removes a macro from /ps add or /ps remove"), false);
-        client.player.sendMessage(Text.literal("§6/ps macro toggle [add/remove] [true/false] §b- Enable or disable macros for /ps add or /ps remove"), false);
-        client.player.sendMessage(Text.literal("§6-=-=-=-=-"), false);
-
-        client.player.sendMessage(Text.literal("§cMacros allow you to automate commands you frequently use."), false);
-        client.player.sendMessage(Text.literal("§cYou can create two types of macros:"), false);
-        client.player.sendMessage(Text.literal("§a- 'add': Executes commands when a player is added."), false);
-        client.player.sendMessage(Text.literal("§a- 'remove': Executes commands when a player is removed."), false);
-        client.player.sendMessage(Text.literal("§6For example:"), false);
-        client.player.sendMessage(Text.literal("§b/ps macro add §6add §agamemode creative ${name} §b- Give creative mode to the player added to the list."), false);
-        client.player.sendMessage(Text.literal("§b/ps macro add §6remove §a${chat} Goodbye ${name} §b- Sends a goodbye message in chat to the player removed from the list."), false);
-        client.player.sendMessage(Text.literal("§6-=-=-=-=-"), false);
         return 1;
     }
 
@@ -232,19 +245,26 @@ public class PlayerSheetCommands {
         PlayerSheetFunctions.MacroState state = functions.loadMacroState();
 
         // Display current macro states
-        client.player.sendMessage(Text.literal("§bCurrent Macros:"), false);
+        client.player.sendMessage(Text.literal("§8§m------------------------------------------\n" +
+                "§f>>>§6§lCurrent Macros§r§f<<<\n" +
+                "§8§m------------------------------------------\n"), false);
 
         // Add details for the 'add' macros
-        client.player.sendMessage(Text.literal("§6Add Macros (Active: " + (state.add.enabled ? "§aEnabled" : "§cDisabled") + "):"), false);
+        client.player.sendMessage(Text.literal("§6Add Macros (Active: " + (state.add.enabled ? "§aEnabled" : "§cDisabled") + "§6):"), false);
         for (String command : state.add.commands) {
             client.player.sendMessage(Text.literal("  - " + command), false);
         }
 
+        client.player.sendMessage(Text.literal("\n"), false);
+
         // Add details for the 'remove' macros
-        client.player.sendMessage(Text.literal("§6Remove Macros (Active: " + (state.remove.enabled ? "§aEnabled" : "§cDisabled") + "):"), false);
+        client.player.sendMessage(Text.literal("§6Remove Macros (Active: " + (state.remove.enabled ? "§aEnabled" : "§cDisabled") + "§6):"), false);
         for (String command : state.remove.commands) {
             client.player.sendMessage(Text.literal("  - " + command), false);
         }
+
+        //End of message
+        client.player.sendMessage(Text.literal("\n§8§m------------------------------------------\n"), false);
 
         return 1;
     }
