@@ -20,6 +20,7 @@ public class PlayerSheetsClient implements ClientModInitializer {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 		PlayerSheetCommands.registerClientCommands();
 		PlayerSheetFunctions.playerTracker();
+		KeyBindHandler.registerKeyBinds();
 		LOGGER.info("Player Sheets Initialized");
 	}
 }

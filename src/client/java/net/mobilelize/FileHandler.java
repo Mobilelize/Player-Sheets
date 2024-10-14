@@ -19,7 +19,7 @@ public class FileHandler {
     private static final String CONFIG_FILE = "settings.txt";
 
     // Get the path to the text config file
-    private static Path getConfigFilePath() {
+    static Path getConfigFilePath() {
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve(DIRECTORY_NAME);
         Path configFile = configDir.resolve(CONFIG_FILE);
 
@@ -29,7 +29,7 @@ public class FileHandler {
             }
             if (!Files.exists(configFile)) {
                 Files.createFile(configFile); // Create file if it doesn't exist
-                Files.write(configFile, List.of("useTabList : true")); // Default to 'true'
+                Files.write(configFile, List.of("useTabList : true", "toggleAddKeyBind : false", "toggleRemoveKeyBind : false"));; // Default to 'true'
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,27 +38,45 @@ public class FileHandler {
         return configFile;
     }
 
-    // Method to load the value of useTabList from the config file
-    public static boolean loadUseTabList() {
+    // Method to load the value of a setting from the config file
+    public static boolean loadBooleanSetting(String key) {
         Path configFile = getConfigFilePath();
         try {
             List<String> lines = Files.readAllLines(configFile);
             for (String line : lines) {
-                if (line.startsWith("useTabList :")) {
+                if (line.startsWith(key)) {
                     return Boolean.parseBoolean(line.split(":")[1].trim());
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return true; // Default to 'true' if not found or error
+        return false;  // Default value if not found
     }
 
-    // Method to save the value of useTabList to the config file
-    public static void saveUseTabList(boolean useTabList) {
+
+    // Method to save a setting to the config file
+    public static void saveSetting(String key, boolean value) {
         Path configFile = getConfigFilePath();
         try {
-            Files.write(configFile, List.of("useTabList : " + useTabList));
+            List<String> lines = Files.readAllLines(configFile);
+            boolean updated = false;
+
+            // Find and update the key if it exists
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).startsWith(key)) {
+                    lines.set(i, key + " : " + value);
+                    updated = true;
+                    break;
+                }
+            }
+
+            // If the key doesn't exist, add a new entry
+            if (!updated) {
+                lines.add(key + " : " + value);
+            }
+
+            Files.write(configFile, lines, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
         }

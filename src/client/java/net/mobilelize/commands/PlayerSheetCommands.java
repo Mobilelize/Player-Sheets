@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
+import net.mobilelize.Casting;
 import net.mobilelize.suggestions.Suggestions;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -12,8 +13,7 @@ import net.minecraft.client.MinecraftClient;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
-import static net.mobilelize.commands.PlayerSheetFunctions.clearMacros;
-import static net.mobilelize.commands.PlayerSheetFunctions.togglePlayerSource;
+import static net.mobilelize.commands.PlayerSheetFunctions.*;
 import static net.mobilelize.suggestions.Suggestions.*;
 
 public class PlayerSheetCommands {
@@ -56,7 +56,19 @@ public class PlayerSheetCommands {
             Suggestions Suggestion = null;
             dispatcher.register(
                     literal("ps").executes(context -> showHelp())
-                            .then(literal("toggle").executes(context -> togglePlayerSource()))
+                            .then(literal("toggle")
+                                    .executes(context -> togglePlayerSource())
+                                    .then(literal("addKeyBind").executes(context -> {
+                                        return toggleAddKeyBind();  // Executes the toggleAddKeyBind method
+                                    }))
+                                    .then(literal("removeKeyBind").executes(context -> {
+                                        return toggleRemoveKeyBind();  // Executes the toggleRemoveKeyBind method
+                                    }))
+                                    .then(literal("getPlayers").executes(context -> {
+                                        return togglePlayerSource();  // Executes the listPlayers method
+                                    }))
+                            )
+
                             .then(literal("help").executes(context -> showHelp()))
                             .then(literal("clear")
                                     .executes(context -> {
@@ -199,7 +211,7 @@ public class PlayerSheetCommands {
         MinecraftClient client = MinecraftClient.getInstance();
 
         client.player.sendMessage(Text.literal(
-                "§8§m------------------------------------------\n" +
+                "\n§8§m------------------------------------------\n" +
                 "§f>>>§6§lPlayer Sheets Help Menu§r§f<<<\n" +
                 "§8§m------------------------------------------\n" +
                 "\n" +
@@ -208,7 +220,7 @@ public class PlayerSheetCommands {
                 "§6/ps add [playerName] §7- §fAdd a player.\n" +
                 "§6/ps remove [playerName] §7- §fRemove a player.\n" +
                 "§6/ps list §7- §fList all tracked players.\n" +
-                "§6/ps toggle §7- §fToggle between Tab List and Rendered Players.\n" +
+                "§6/ps toggle [addKeyBind/removeKeyBind/getPlayers]§7- §fToggle between Tab List and Rendered Players, and a toggle for Add and Remove Key Bind.\n" +
                 "§6/ps a [playerName] §7- §fShort command to add a player.\n" +
                 "§6/ps r [playerName] §7- §fShort command to remove a player.\n" +
                 "§6/ps l §7- §fShort command to list all players.\n" +
@@ -217,6 +229,7 @@ public class PlayerSheetCommands {
                 "§f>>>§6§lMacros Management§r§f<<<\n" +
                 "§8§m------------------------------------------\n" +
                 "\n" +
+                "§7§lCommands:\n" +
                 "§6/ps macro add [add/remove] [command] §7- §fAdd a macro to /ps add or /ps remove.\n" +
                 "§6/ps macro remove [add/remove] [command] §7- §fRemove a macro from /ps add or /ps remove.\n" +
                 "§6/ps macro toggle [add/remove] [true/false] §7- §fEnable or disable macros for /ps add or /ps remove.\n" +
@@ -244,7 +257,7 @@ public class PlayerSheetCommands {
         // Load the current macro states
         PlayerSheetFunctions.MacroState state = functions.loadMacroState();
 
-        StringBuilder macroList = new StringBuilder("§8§m------------------------------------------\n" +
+        StringBuilder macroList = new StringBuilder("\n§8§m------------------------------------------\n" +
                 "§f>>>§6§lCurrent Macros§r§f<<<\n" +
                 "§8§m------------------------------------------\n" + "\n§6Add Macros (Active: " + (state.add.enabled ? "§aEnabled" : "§cDisabled") + "§6):");
 

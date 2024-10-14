@@ -1,7 +1,9 @@
 package net.mobilelize.commands;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.client.MinecraftClient;
+import net.mobilelize.Casting;
 import net.mobilelize.FileHandler;
 import net.mobilelize.suggestions.Suggestions;
 import org.spongepowered.include.com.google.gson.Gson;
@@ -19,9 +21,13 @@ public class PlayerSheetFunctions {
     private static final String MACRO_FILE = "player-macros.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public  static boolean useTabList = true;
+    public  static boolean toggleAddKeyBind = false;
+    public  static boolean toggleRemoveKeyBind = false;
 
     public static void playerTracker() {
-        useTabList = FileHandler.loadUseTabList();  // Load the value from the text file
+        useTabList = FileHandler.loadBooleanSetting("useTabList");  // Load the value from the text file
+        toggleAddKeyBind = FileHandler.loadBooleanSetting("toggleAddKeyBind");
+        toggleRemoveKeyBind = FileHandler.loadBooleanSetting("toggleRemoveKeyBind");
     }
 
     // Toggle and save the state
@@ -31,7 +37,29 @@ public class PlayerSheetFunctions {
         MinecraftClient.getInstance().player.sendMessage(Text.literal("§6Player source set to: " + source), false);
 
         // Save the updated state to the config file
-        FileHandler.saveUseTabList(useTabList);
+        FileHandler.saveSetting("useTabList", useTabList);
+        return 1;
+    }
+
+    // Toggle and save the state for the Add Key Bind
+    public static int toggleAddKeyBind() {
+        toggleAddKeyBind = !toggleAddKeyBind;  // Toggle the state of the add key bind
+        String state = toggleAddKeyBind ? "§aEnabled" : "§cDisabled";  // Message based on the new state
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§6Add player key bind is now " + state), false);
+
+        // Save the updated state to the config file
+        FileHandler.saveSetting("toggleAddKeyBind", toggleAddKeyBind);
+        return 1;
+    }
+
+    // Toggle and save the state for the Remove Key Bind
+    public static int toggleRemoveKeyBind() {
+        toggleRemoveKeyBind = !toggleRemoveKeyBind;  // Toggle the state of the remove key bind
+        String state = toggleRemoveKeyBind ? "§aEnabled" : "§cDisabled";  // Message based on the new state
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("§6Remove player key bind is now " + state), false);
+
+        // Save the updated state to the config file
+        FileHandler.saveSetting("toggleRemoveKeyBind", toggleRemoveKeyBind);
         return 1;
     }
 
@@ -138,7 +166,7 @@ public class PlayerSheetFunctions {
     }
 
     // Execute macros for /ps add or /ps remove
-    private void executeMacros(String type, String playerName) {
+    private static void executeMacros(String type, String playerName) {
         MacroState state = loadMacroState();
 
         List<String> commandsToExecute;
@@ -211,7 +239,7 @@ public class PlayerSheetFunctions {
     }
 
     // Existing addPlayer method, now integrated with macros
-    public int addPlayer(String playerName) {
+    public static int addPlayer(String playerName) {
         Set<String> players = readPlayers();
         if (players.add(playerName)) {
             writePlayers(players);
@@ -224,7 +252,7 @@ public class PlayerSheetFunctions {
     }
 
     // Existing removePlayer method, now integrated with macros
-    public int removePlayer(String playerName) {
+    public static int removePlayer(String playerName) {
         Set<String> players = readPlayers();
         if (players.remove(playerName)) {
             writePlayers(players);
@@ -293,7 +321,7 @@ public class PlayerSheetFunctions {
     }
 
     // Read the player names from the configuration file
-    private Set<String> readPlayers() {
+    private static Set<String> readPlayers() {
         Set<String> players = new HashSet<>();
         try {
             Path path = Path.of(CONFIG_DIRECTORY, CONFIG_FILE);
@@ -314,7 +342,7 @@ public class PlayerSheetFunctions {
     }
 
     // Write the player names to the configuration file
-    private void writePlayers(Set<String> players) {
+    private static void writePlayers(Set<String> players) {
         try {
             // Ensure the config directory exists
             Files.createDirectories(Path.of(CONFIG_DIRECTORY));
@@ -326,6 +354,54 @@ public class PlayerSheetFunctions {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void addLookedAtPlayer() {
+
+        if (!toggleAddKeyBind)
+        {
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cAdd Player Key bind is currently Disabled"));
+            return;
+        }
+
+        PlayerEntity getPlayer = (PlayerEntity) Casting.getLookedAtPlayer();
+
+        if (getPlayer != null)
+        {
+            String name = String.valueOf(getPlayer.getName());
+            if (name.startsWith("literal{") && name.endsWith("}")) {
+                name = name.substring(8, name.length() - 1); // Removes the first 8 chars ("literal{") and the last char ("}")
+            }
+
+            addPlayer(name);
+        }
+        else {
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo Player in sight to add to the list"));
+        }
+
+    }
+
+    public static void removeLookedAtPlayer() {
+
+        if (!toggleRemoveKeyBind)
+        {
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cRemove Player Key bind is currently Disabled"));
+            return;
+        }
+
+        PlayerEntity getPlayer = (PlayerEntity) Casting.getLookedAtPlayer();
+
+        if (getPlayer != null)
+        {
+            String name = String.valueOf(getPlayer.getName());
+            if (name.startsWith("literal{") && name.endsWith("}")) {
+                name = name.substring(8, name.length() - 1); // Removes the first 8 chars ("literal{") and the last char ("}")
+            }
+            removePlayer(name);
+        }
+        else {
+            MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo Player in sight to remove from the list"));
         }
     }
 }
