@@ -8,8 +8,8 @@
 		"Mobilelize"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/Mobilelize/Player-Sheets",
+		"sources": "https://github.com/Mobilelize/Player-Sheets"
 	},
 	"license": "MIT",
 	"icon": "assets/player-sheets/icon.png",
