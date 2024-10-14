@@ -56,6 +56,7 @@ public class PlayerSheetCommands {
             Suggestions Suggestion = null;
             dispatcher.register(
                     literal("ps").executes(context -> showHelp())
+                            .then(literal("settings").executes(context -> showSettingsList()))
                             .then(literal("toggle")
                                     .executes(context -> togglePlayerSource())
                                     .then(literal("addKeyBind").executes(context -> {
@@ -221,6 +222,7 @@ public class PlayerSheetCommands {
                 "§6/ps remove [playerName] §7- §fRemove a player.\n" +
                 "§6/ps list §7- §fList all tracked players.\n" +
                 "§6/ps toggle [addKeyBind/removeKeyBind/getPlayers]§7- §fToggle between Tab List and Rendered Players, and a toggle for Add and Remove Key Bind.\n" +
+                "§6/ps settings §7- §fList all settings.\n" +
                 "§6/ps a [playerName] §7- §fShort command to add a player.\n" +
                 "§6/ps r [playerName] §7- §fShort command to remove a player.\n" +
                 "§6/ps l §7- §fShort command to list all players.\n" +
@@ -277,4 +279,23 @@ public class PlayerSheetCommands {
 
         return 1;
     }
+
+    private static int showSettingsList() {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        StringBuilder settingsList = new StringBuilder("\n§8§m------------------------------------------\n" +
+                "§f>>>§6§lCurrent Settings§r§f<<<\n" +
+                "§8§m------------------------------------------\n");
+
+        // Add details for each setting
+        settingsList.append("\n§f  - Use Tab List: ").append(useTabList ? "§aTrue" : "§cFalse");
+        settingsList.append("\n§f  - Use Add Key Bind: ").append(toggleAddKeyBind ? "§aTrue" : "§cFalse");
+        settingsList.append("\n§f  - Use Remove Key Bind: ").append(toggleRemoveKeyBind ? "§aTrue" : "§cFalse");
+
+        // End of message
+        client.player.sendMessage(Text.literal(settingsList + "\n\n§8§m------------------------------------------\n"), false);
+
+        return 1;
+    }
+
 }
