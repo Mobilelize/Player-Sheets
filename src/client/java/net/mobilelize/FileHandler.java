@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Objects;
 
 public class FileHandler {
 
@@ -51,6 +52,7 @@ public class FileHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (Objects.equals(key, "useTabList")) {return true;}
         return false;  // Default value if not found
     }
 
