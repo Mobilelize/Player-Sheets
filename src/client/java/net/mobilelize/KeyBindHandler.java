@@ -27,13 +27,13 @@ public class KeyBindHandler {
         // Load the keys from the settings file
         addPlayerKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "Add Player",
-                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B,
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V,
                 "Player Sheets"
         ));
 
         removePlayerKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "Remove Player",
-                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_M,
+                InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_B,
                 "Player Sheets"
         ));
 

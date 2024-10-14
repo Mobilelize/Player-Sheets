@@ -80,7 +80,7 @@ public class PlayerSheetCommands {
                                     })
                             )
                             .then(literal("add")
-                                    .then(argument("playerName", StringArgumentType.string())
+                                    .then(argument("playerName", StringArgumentType.greedyString())
                                             .suggests(getOnlinePlayers)
                                             .executes(context -> {
                                                 String playerName = StringArgumentType.getString(context, "playerName");
@@ -89,7 +89,7 @@ public class PlayerSheetCommands {
                                     )
                             )
                             .then(literal("a") // Short command for add
-                                    .then(argument("playerName", StringArgumentType.string())
+                                    .then(argument("playerName", StringArgumentType.greedyString())
                                             .suggests(getOnlinePlayers)
                                             .executes(context -> {
                                                 String playerName = StringArgumentType.getString(context, "playerName");
@@ -98,7 +98,7 @@ public class PlayerSheetCommands {
                                     )
                             )
                             .then(literal("remove")
-                                    .then(argument("playerName", StringArgumentType.string())
+                                    .then(argument("playerName", StringArgumentType.greedyString())
                                             .suggests(getConfigNames)
                                             .executes(context -> {
                                                 String playerName = StringArgumentType.getString(context, "playerName");
@@ -107,7 +107,7 @@ public class PlayerSheetCommands {
                                     )
                             )
                             .then(literal("r") // Short command for remove
-                                    .then(argument("playerName", StringArgumentType.string())
+                                    .then(argument("playerName", StringArgumentType.greedyString())
                                             .suggests(getConfigNames)
                                             .executes(context -> {
                                                 String playerName = StringArgumentType.getString(context, "playerName");
