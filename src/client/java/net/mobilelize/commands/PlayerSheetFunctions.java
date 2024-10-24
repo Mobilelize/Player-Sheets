@@ -273,7 +273,7 @@ public class PlayerSheetFunctions {
             MinecraftClient.getInstance().player.sendMessage(Text.literal("§cNo players tracked"), false);
         } else {
             StringBuilder playerListMessage = new StringBuilder();
-            playerListMessage.append("§6Tracked players (").append(totalPlayers).append("):§a ");
+            playerListMessage.append("§6Tracked players (§f").append(totalPlayers).append("§6):§a ");
 
             int index = 0;
             for (String player : players) {

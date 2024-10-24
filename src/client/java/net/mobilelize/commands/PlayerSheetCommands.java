@@ -4,8 +4,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandSource;
-import net.mobilelize.Casting;
-import net.mobilelize.suggestions.Suggestions;
+import net.mobilelize.FileHandler;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.text.Text;
@@ -17,6 +16,8 @@ import static net.mobilelize.commands.PlayerSheetFunctions.*;
 import static net.mobilelize.suggestions.Suggestions.*;
 
 public class PlayerSheetCommands {
+
+    public static String commandPrefix = FileHandler.loadCommandPrefix().replace(" ", "-");
 
     private static final PlayerSheetFunctions functions = new PlayerSheetFunctions();
 
@@ -53,9 +54,8 @@ public class PlayerSheetCommands {
     public static void registerClientCommands() {
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
             // Register the main /ps command
-            Suggestions Suggestion = null;
             dispatcher.register(
-                    literal("ps").executes(context -> showHelp())
+                    literal(commandPrefix).executes(context -> showHelp())
                             .then(literal("settings").executes(context -> showSettingsList()))
                             .then(literal("toggle")
                                     .executes(context -> togglePlayerSource())
@@ -217,26 +217,26 @@ public class PlayerSheetCommands {
                 "§8§m------------------------------------------\n" +
                 "\n" +
                 "§7§lCommands:\n" +
-                "§6/ps help §7- §fShow this help menu.\n" +
-                "§6/ps add [playerName] §7- §fAdd a player.\n" +
-                "§6/ps remove [playerName] §7- §fRemove a player.\n" +
-                "§6/ps list §7- §fList all tracked players.\n" +
-                "§6/ps toggle [addKeyBind/removeKeyBind/getPlayers]§7- §fToggle between Tab List and Rendered Players, and a toggle for Add and Remove Key Bind.\n" +
-                "§6/ps settings §7- §fList all settings.\n" +
-                "§6/ps a [playerName] §7- §fShort command to add a player.\n" +
-                "§6/ps r [playerName] §7- §fShort command to remove a player.\n" +
-                "§6/ps l §7- §fShort command to list all players.\n" +
+                "§6/" + commandPrefix + " help §7- §fShow this help menu.\n" +
+                "§6/" + commandPrefix + " add [playerName] §7- §fAdd a player.\n" +
+                "§6/" + commandPrefix + " remove [playerName] §7- §fRemove a player.\n" +
+                "§6/" + commandPrefix + " list §7- §fList all tracked players.\n" +
+                "§6/" + commandPrefix + " toggle [addKeyBind/removeKeyBind/getPlayers]§7- §fToggle between Tab List and Rendered Players, and a toggle for Add and Remove Key Bind.\n" +
+                "§6/" + commandPrefix + " settings §7- §fList all settings.\n" +
+                "§6/" + commandPrefix + " a [playerName] §7- §fShort command to add a player.\n" +
+                "§6/" + commandPrefix + " r [playerName] §7- §fShort command to remove a player.\n" +
+                "§6/" + commandPrefix + " l §7- §fShort command to list all players.\n" +
                 "\n" +
                 "§8§m------------------------------------------\n" +
                 "§f>>>§6§lMacros Management§r§f<<<\n" +
                 "§8§m------------------------------------------\n" +
                 "\n" +
                 "§7§lCommands:\n" +
-                "§6/ps macro add [add/remove] [command] §7- §fAdd a macro to /ps add or /ps remove.\n" +
-                "§6/ps macro remove [add/remove] [command] §7- §fRemove a macro from /ps add or /ps remove.\n" +
-                "§6/ps macro toggle [add/remove] [true/false] §7- §fEnable or disable macros for /ps add or /ps remove.\n" +
-                "§6/ps macro list §7- §fList all macros.\n" +
-                "§6/ps macro clear [add/remove/all] §7- §fClear macros for /ps add, /ps remove, or all.\n" +
+                "§6/" + commandPrefix + " macro add [add/remove] [command] §7- §fAdd a macro to /" + commandPrefix + " add or /" + commandPrefix + " remove.\n" +
+                "§6/" + commandPrefix + " macro remove [add/remove] [command] §7- §fRemove a macro from /" + commandPrefix + " add or /" + commandPrefix + " remove.\n" +
+                "§6/" + commandPrefix + " macro toggle [add/remove] [true/false] §7- §fEnable or disable macros for /" + commandPrefix + " add or /" + commandPrefix + " remove.\n" +
+                "§6/" + commandPrefix + " macro list §7- §fList all macros.\n" +
+                "§6/" + commandPrefix + " macro clear [add/remove/all] §7- §fClear macros for /" + commandPrefix + " add, /" + commandPrefix + " remove, or all.\n" +
                 "\n" +
                 "§8§m------------------------------------------\n" +
                 "§cMacros allow you to automate commands you frequently use.\n" +
@@ -245,8 +245,8 @@ public class PlayerSheetCommands {
                 "§7- §a'remove': Executes commands when a player is removed.\n" +
                 "\n" +
                 "§7For example:\n" +
-                "§6/ps macro add §aadd §6gamemode creative ${name} §7- §fGive creative mode to the player added to the list.\n" +
-                "§6/ps macro add §aremove §6${chat} Goodbye ${name} §7- §fSends a goodbye message in chat with the removed player name from the list.\n" +
+                "§6/" + commandPrefix + " macro add §aadd §6gamemode creative ${name} §7- §fGive creative mode to the player added to the list.\n" +
+                "§6/" + commandPrefix + " macro add §aremove §6${chat} Goodbye ${name} §7- §fSends a goodbye message in chat with the removed player name from the list.\n" +
                 "\n" +
                 "§8§m------------------------------------------\n"), false);
 

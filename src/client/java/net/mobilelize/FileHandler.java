@@ -30,13 +30,28 @@ public class FileHandler {
             }
             if (!Files.exists(configFile)) {
                 Files.createFile(configFile); // Create file if it doesn't exist
-                Files.write(configFile, List.of("useTabList : true", "toggleAddKeyBind : false", "toggleRemoveKeyBind : false"));; // Default to 'true'
+                Files.write(configFile, List.of("commandPrefix : ps", "useTabList : true", "toggleAddKeyBind : false", "toggleRemoveKeyBind : false"));; // Default to 'true'
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return configFile;
+    }
+
+    public static String loadCommandPrefix() {
+        Path configFile = getConfigFilePath();
+        try {
+            List<String> lines = Files.readAllLines(configFile);
+            for (String line : lines) {
+                if (line.startsWith("commandPrefix")) {
+                    return line.split(":")[1].trim();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "ps";
     }
 
     // Method to load the value of a setting from the config file
